@@ -1,0 +1,21 @@
+<nav class="navbar justify-content-center">
+    {% if is_user %}
+    <a class="nav-link mx-5" href="#" hx-get="{{ url_for('main.home') }}" hx-target="#base-column" hx-push-url="true"
+        hx-swap="innerHTML">
+        <span uk-icon="home"></span>
+    </a>
+    {% endif %}
+    {% if not is_user %}
+    <a class="nav-link mx-5" href="#" hx-get="{{ url_for('auth.login') }}" hx-target="#base-column" hx-push-url="true"
+        hx-swap="innerHTML">
+        <span uk-icon="sign-in"></span>
+    </a>
+    {% endif %}
+    {% if is_user %}
+    <a class="nav-link mx-5" href="#" hx-get="{{ url_for('auth.logout') }}" hx-target="#base-column" hx-push-url="true"
+        hx-swap="innerHTML">
+        <span uk-icon="sign-out"></span>
+    </a>
+    {% endif%}
+</nav>
+<hr class="mb-5">

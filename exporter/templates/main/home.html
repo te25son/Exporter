@@ -1,0 +1,19 @@
+{% block content %}
+{% include 'nav.html' %}
+<h1 class="display-3">Welcome!</h1>
+<div class="text-start mt-5 mb-5">
+    <p class="lead">This is The Exporter. The way it works is, you give us an <code>Annotation ID</code> as well as the annotation's <code>Queue ID</code> for the data you want to export from &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;. We perform some magic in the background, and alert you with a JSON response on whether the magic was completed successfully or not.</p>
+    <p class="lead">Unfortunately, only a certain special someone with username: &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; and password: &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608; can use the exporter.</p>
+</div>
+<div id="export-card">
+    <div class="d-grid">
+        <button class="btn btn-danger" 
+                type="submit"
+                hx-get="{{ url_for('main.export') }}"
+                hx-target="#export-card"
+                hx-swap="innerHTML">
+            Am I a special someone?
+        </button>
+    </div>
+</div>
+{% endblock %}

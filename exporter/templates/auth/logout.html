@@ -1,0 +1,25 @@
+{% block content %}
+{% include 'nav.html' %}
+<h1 class="display-6">Logout</h1>
+<div class="card text-center">
+    <div class="card-body">
+        <p class="card-text">Are you sure you want to log out?</p>
+        <a class="btn btn-outline-success px-5" 
+           href="#"
+           hx-post="{{ url_for('auth.logout' )}}"
+           hx-target="#base-column"
+           hx-push-url="true"
+           hx-swap="innerHTML">
+           <span uk-icon="check"></span>
+        </a>
+        <a class="btn btn-outline-danger px-5" 
+           href="#"
+           hx-get="{{ url_for('main.home' )}}"
+           hx-target="#base-column"
+           hx-push-url="true"
+           hx-swap="innerHTML">
+           <span uk-icon="close"></span>
+        </a>
+    </div>
+</div>
+{% endblock %}

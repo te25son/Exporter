@@ -1,0 +1,22 @@
+{% from '_formHelpers.html' import render_field %}
+
+{% block content %}
+<div class="card text-center">
+    <div class="card-body">
+        <form method="post">
+            <dl>
+                {{ render_field(form.annotation_id, class="form-control", placeholder="Annotation ID") }}
+                {{ render_field(form.queue_id, class="form-control", placeholder="Queue ID") }}
+            </dl>
+            <div class="d-grid">
+                <button class="btn btn-danger" 
+                        type="submit"
+                        hx-post="{{ url_for('main.export') }}"
+                        hx-target="#export-card">
+                    Export
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
