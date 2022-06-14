@@ -71,9 +71,15 @@ class InvoiceExporter:
         Gets the value of the datapoint using the given key. Converts
         the value (if present) into a valid ISO 8601 datetime string.
         Otherwise returns None.
+
+        Currently only accepts a string with the format `%Y-%m-%d` without
+        time. If any other formatted string is passed, will return None.
         """
         to_iso = lambda d: datetime.strptime(d, "%Y-%m-%d").isoformat()
-        return to_iso(date) if (date := self._get_datapoint_value(key)) else None
+        try:
+            return to_iso(date) if (date := self._get_datapoint_value(key)) else None
+        except ValueError:
+            return None
 
     @staticmethod
     def _get_datapoint_text_by_schema_ids(element: Element) -> Dict[str, str | None]:
