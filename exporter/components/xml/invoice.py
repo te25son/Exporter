@@ -38,7 +38,7 @@ class Invoice:
     """
     root: XMLElement = XMLElement(Element("InvoiceRegisters"))
     invoices: XMLElement = root.add_sub_element("Invoices")
-    payable: XMLElement = root.add_sub_element("Payable")
+    payable: XMLElement = invoices.add_sub_element("Payable")
     invoice_number: XMLElement = payable.add_sub_element("InvoiceNumber")
     invoice_date: XMLElement = payable.add_sub_element("InvoiceDate")
     due_date: XMLElement = payable.add_sub_element("DueDate")
@@ -61,8 +61,8 @@ class InvoiceDetail():
     """
     def __init__(self, detail_element: XMLElement) -> None:
         self.detail: XMLElement = detail_element
-        self.amount: XMLElement = XMLElement(SubElement(self.detail.element, "Amount"))
-        self.account_id: XMLElement = XMLElement(SubElement(self.detail.element, "AccountId"))
-        self.quantity: XMLElement = XMLElement(SubElement(self.detail.element, "Quantity"))
-        self.notes: XMLElement = XMLElement(SubElement(self.detail.element, "Notes"))
+        self.amount: XMLElement = self.detail.add_sub_element("Amount")
+        self.account_id: XMLElement = self.detail.add_sub_element("AccountId")
+        self.quantity: XMLElement = self.detail.add_sub_element("Quantity")
+        self.notes: XMLElement = self.detail.add_sub_element("Notes")
 # fmt: on
