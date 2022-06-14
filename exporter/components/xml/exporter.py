@@ -72,7 +72,7 @@ class InvoiceExporter:
         the value (if present) into a valid ISO 8601 datetime string.
         Otherwise returns None.
 
-        Currently only accepts a string with the format `%Y-%m-%d` without
+        Currently only accepts a string with the format `YYYY-MM-DD` without
         time. If any other formatted string is passed, will return None.
         """
         to_iso = lambda d: datetime.strptime(d, "%Y-%m-%d").isoformat()
