@@ -25,6 +25,10 @@ class TestElements:
                 <datapoint schema_id="no_text"></datapoint>
                 <datapoint>No schema id here either</datapoint>
             </tuple>
+            <tuple>
+                <datapoint schema_id="birth_date">1990-03-31</datapoint>
+                <datapoint schema_id="birth_date_invalid">1990-03-31T00:00:00</datapoint>
+            </tuple>
         </result>
         """
 
@@ -37,7 +41,7 @@ class TestElements:
         return XMLElement(Element("New"))
 
     @pytest.fixture
-    def exporter(self, valid_xml) -> InvoiceExporter:
+    def exporter(self, valid_xml: bytes) -> InvoiceExporter:
         return InvoiceExporter(valid_xml)
 
     def test_can_create_xml_element_from_existing_element(self, valid_multi_element: Element):
@@ -54,14 +58,18 @@ class TestElements:
         assert xml_element.element.text == text
 
     def test_can_set_text_from_dictionary(self, xml_element: XMLElement, exporter: InvoiceExporter):
-        (first_name := xml_element.add_sub_element("FirstName")).set_text(first_name_text := exporter.datapoints.get("first_name"))
-        (last_name := xml_element.add_sub_element("LastName")).set_text(last_name_text := exporter.datapoints.get("last_name"))
+        (first_name := xml_element.add_sub_element("FirstName")).set_text(first_name_text := exporter._get_datapoint_value("first_name"))
+        (last_name := xml_element.add_sub_element("LastName")).set_text(last_name_text := exporter._get_datapoint_value("last_name"))
+        (birth_date := xml_element.add_sub_element("BirthDate")).set_text(birth_date_text := exporter._get_datapoint_date_value("birth_date"))
+        (birth_date_invalid := xml_element.add_sub_element("BirthDateInvalid")).set_text(birth_date_invalid_text := exporter._get_datapoint_date_value("birth_date_invalid"))
 
         byte_string = tostring(xml_element.element, encoding='utf8', method='xml')
 
         assert first_name.element.text == first_name_text
         assert last_name.element.text == last_name_text
-        assert byte_string == b"<?xml version='1.0' encoding='utf8'?>\n<New><FirstName>First</FirstName><LastName>Last</LastName></New>"
+        assert birth_date.element.text == birth_date_text
+        assert birth_date_invalid.element.text == birth_date_invalid_text
+        assert byte_string == b"<?xml version='1.0' encoding='utf8'?>\n<New><FirstName>First</FirstName><LastName>Last</LastName><BirthDate>1990-03-31T00:00:00</BirthDate><BirthDateInvalid /></New>"
 
     def test_invoice_exporter(self, exporter: InvoiceExporter):
         assert exporter.datapoints == {
@@ -70,7 +78,9 @@ class TestElements:
             'last_name': 'Last',
             'age': '55',
             'number': '123456789',
-            'no_text': None
+            'no_text': None,
+            'birth_date': '1990-03-31',
+            'birth_date_invalid': '1990-03-31T00:00:00'
         }
         assert exporter.detail_items == [
             {'first_name': 'First', 'last_name': 'Last'},
