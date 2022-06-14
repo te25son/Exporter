@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Dict, List
-from xml.etree.ElementTree import ParseError, fromstring, SubElement
+from xml.etree.ElementTree import Element, ParseError, fromstring, SubElement
 from .invoice import Invoice, InvoiceDetail, XMLElement
 
 
@@ -11,7 +11,7 @@ class InvoiceExporter:
         except ParseError as e:
             raise Exception(f"Invalid xml content. Unable to parse. {e.msg}")
 
-        self.datapoints = self._get_datapoints()
+        self.datapoints = self._get_datapoint_text_by_schema_ids(self.content)
         self.detail_items = self._get_detail_items()
 
     def create_export_xml(self) -> bytes:
@@ -44,34 +44,19 @@ class InvoiceExporter:
 
         return invoice.to_byte_string()
 
-    def _get_datapoints(self) -> Dict[str | None, str | None]:
-        """
-        Gets all datapoint elements in the content and creates a
-        dictionary using the datapoints schema_id as the key and
-        the datapoint's text as a value.
-
-        If no datapoints are found, and/or if no datapoints contain
-        a schema_id, an empty dictionary will be returned.
-        """
-        return {
-            datapoint.attrib.get("schema_id"): datapoint.text
-            for datapoint in self.content.iter("datapoint")
-            if datapoint.attrib.get("schema_id") is not None
-        }
-
-    def _get_detail_items(self) -> List[Dict[str | None, str | None]]:
+    def _get_detail_items(self) -> List[Dict[str, str | None]]:
         """
         Gets all line items to be used as detail items in the xml conversion
         as a list of dictionaries.
-        
+
         The line items are found in the content's tuple elements. If no
         tuple elements are found, and/or if no tuple elements contain a
         schema_id equal to line_item, and empty list is returned.
         """
         return [
-            {item.attrib.get("schema_id"): item.text for item in tup.iter("datapoint")}
-            for tup in self.content.iter("tuple")
-            if tup.attrib.get("schema_id") == "line_item"
+            self._get_datapoint_text_by_schema_ids(tuple_element)
+            for tuple_element in self.content.iter("tuple")
+            if tuple_element.attrib.get("schema_id") == "line_item"
         ]
 
     def _get_datapoint_value(self, key: str) -> str | None:
@@ -89,3 +74,19 @@ class InvoiceExporter:
         """
         date = self.datapoints.get(key)
         return datetime.strptime(date, "%Y-%m-%d").isoformat() if date else None
+
+    @staticmethod
+    def _get_datapoint_text_by_schema_ids(element: Element) -> Dict[str, str | None]:
+        """
+        Gets all datapoint elements in the given element and creates a
+        dictionary using the datapoint's schema_id as the key and
+        the datapoint's text as a value.
+
+        If no datapoints are found, and/or if no datapoints contain
+        a schema_id, an empty dictionary will be returned.
+        """
+        return {
+            schema_id: datapoint.text
+            for datapoint in element.iter("datapoint")
+            if (schema_id := datapoint.attrib.get("schema_id")) is not None
+        }
