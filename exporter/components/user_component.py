@@ -16,6 +16,7 @@ class UserComponent:
     Component that acts a separator between the view and the logic.
     Deals specificaly with logic related to users.
     """
+
     @staticmethod
     def get_by_username(username: str) -> User | None:
         user: User | None

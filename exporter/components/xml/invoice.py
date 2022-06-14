@@ -21,12 +21,13 @@ class XMLElement:
     >>> sample = Element("sample")
     >>> sample.text = "some text"
     """
+
     element: Element
 
     def set_text(self, text: str | None = None) -> None:
         self.element.text = text
 
-    def add_sub_element(self, tag: str) -> 'XMLElement':
+    def add_sub_element(self, tag: str) -> "XMLElement":
         return XMLElement(SubElement(self.element, tag))
 
 

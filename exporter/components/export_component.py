@@ -10,6 +10,7 @@ class ExportComponent:
     Component that acts a separator between the view and the logic.
     Deals specificaly with logic related to exporting.
     """
+
     @staticmethod
     def try_export(queue_id: str, annotation_id: str) -> bool:
         """
@@ -21,10 +22,10 @@ class ExportComponent:
         If a valid response is received, it will then attempt to covert
         the response to a new XML format and again convert the new XML
         to a byte64 string.
-        
+
         The byte64 string is then json serialized along with the annotation id,
         and both are passed to the post endpoint in settings.
-        
+
         If all goes well, the method will return True. If any erros occur, it
         will return False.
         """

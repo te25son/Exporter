@@ -10,6 +10,7 @@ def auth_action(func: Callable[..., Any]):
     a Context based on the incoming function's name, so
     dynamically creates the path to the views template.
     """
+
     @wraps(func)
     def wrapper():
         return func(AuthContext(request=request, template_name=func.__name__))
@@ -23,6 +24,7 @@ def main_action(func: Callable[..., Any]):
     a Context based on the incoming function's name, so
     dynamically creates the path to the views template.
     """
+
     @wraps(func)
     def wrapper():
         return func(MainContext(request=request, template_name=func.__name__))
@@ -33,9 +35,10 @@ def main_action(func: Callable[..., Any]):
 def no_direct_url_access(func: Callable[..., Any]):
     """
     Decorate that prevents direct access of a view/endpoint.
-    
+
     Overriden when TESTING is configured to on.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if request.referrer or current_app.config["TESTING"]:
@@ -50,6 +53,7 @@ def login_required(func: Callable[..., Any]):
     Decorator that requires a user to be logged in.
     Non logged in users are redirected to the login page.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if session.get("username"):
@@ -67,6 +71,7 @@ def logged_in_redirect(func: Callable[..., Any]):
     not make sense for a logged in user to access
     these views if they're already logged in.
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         if session.get("username"):

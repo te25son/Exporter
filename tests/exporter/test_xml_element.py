@@ -78,4 +78,3 @@ class TestElements:
             {'number': '123456789', 'no_text': None}
         ]
     # fmt: on
-        
