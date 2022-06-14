@@ -26,6 +26,9 @@ class XMLElement:
     def set_text(self, text: str | None = None) -> None:
         self.element.text = text
 
+    def add_sub_element(self, tag: str) -> 'XMLElement':
+        return XMLElement(SubElement(self.element, tag))
+
 
 # fmt: off
 @dataclass
@@ -34,19 +37,19 @@ class Invoice:
     Sets up the XML structure to be used for conversion.
     """
     root: XMLElement = XMLElement(Element("InvoiceRegisters"))
-    invoices: XMLElement = XMLElement(SubElement(root.element, "Invoices"))
-    payable: XMLElement = XMLElement(SubElement(invoices.element, "Payable"))
-    invoice_number: XMLElement = XMLElement(SubElement(payable.element, "InvoiceNumber"))
-    invoice_date: XMLElement = XMLElement(SubElement(payable.element, "InvoiceDate"))
-    due_date: XMLElement = XMLElement(SubElement(payable.element, "DueDate"))
-    total_amount: XMLElement = XMLElement(SubElement(payable.element, "TotalAmount"))
-    notes: XMLElement = XMLElement(SubElement(payable.element, "Notes"))
-    iban: XMLElement = XMLElement(SubElement(payable.element, "Iban"))
-    amount: XMLElement = XMLElement(SubElement(payable.element, "Amount"))
-    currency: XMLElement = XMLElement(SubElement(payable.element, "Currency"))
-    vendor: XMLElement = XMLElement(SubElement(payable.element, "Vendor"))
-    vendor_address: XMLElement = XMLElement(SubElement(payable.element, "VendorAddress"))
-    details: XMLElement = XMLElement(SubElement(payable.element, "Details"))
+    invoices: XMLElement = root.add_sub_element("Invoices")
+    payable: XMLElement = root.add_sub_element("Payable")
+    invoice_number: XMLElement = payable.add_sub_element("InvoiceNumber")
+    invoice_date: XMLElement = payable.add_sub_element("InvoiceDate")
+    due_date: XMLElement = payable.add_sub_element("DueDate")
+    total_amount: XMLElement = payable.add_sub_element("TotalAmount")
+    notes: XMLElement = payable.add_sub_element("Notes")
+    iban: XMLElement = payable.add_sub_element("Iban")
+    amount: XMLElement = payable.add_sub_element("Amount")
+    currency: XMLElement = payable.add_sub_element("Currency")
+    vendor: XMLElement = payable.add_sub_element("Vendor")
+    vendor_address: XMLElement = payable.add_sub_element("VendorAddress")
+    details: XMLElement = payable.add_sub_element("Details")
 
     def to_byte_string(self) -> bytes:
         return base64.b64encode(tostring(self.root.element, encoding='utf8', method='xml'))
